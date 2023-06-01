@@ -1,6 +1,9 @@
 name: 'Auth0 Server'
 description: 'Auth0 CICD Example with Github Actions'
 inputs:
+  sls-version:
+    description: 'Serverless Framework Version'
+    required: true
   stage:
       description: 'Deployment Env'
       required: true
@@ -13,3 +16,4 @@ runs:
   image: 'Dockerfile'
   env:
     STAGE: ${{ inputs.stage }}
+    SLS_VERSION: ${{ inputs.sls-version }}
