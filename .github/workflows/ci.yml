@@ -1,0 +1,73 @@
+name: DEV Continuous Integration
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to deploy
+        required: true
+      function:
+        description: Lambda function to deploy
+        required: false
+        default: 'none'
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+          
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Get AWS Keys for Deployment
+        shell: bash
+        id: predeploy
+        run: bash predeploy.sh
+        working-directory: ./actions
+        env:
+          ENVIRONMENT: dev
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Generate .env file from Github Secrets
+        env:
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          AUDIENCE: ${{ secrets.AUDIENCE }}
+          GRANT_TYPE: ${{ secrets.GRANT_TYPE }}
+        run: |
+          touch .env
+          echo CLIENT_SECRET="$CLIENT_SECRET" >> .env
+          echo AUDIENCE="$AUDIENCE" >> .env
+          echo GRANT_TYPE="$GRANT_TYPE" >> .env
+
+          echo "cat .env"
+          cat .env
+
+          echo "ls -a ."
+          ls -a .
+          less .env
+
+          echo "ls -a ${{ github.workspace }}"
+          ls -a ${{ github.workspace }}
+        shell: bash
+      - name: Deploying Server
+        uses: ./actions/ci
+        with:
+          stage: dev
+
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          REGION: us-west-2
+          

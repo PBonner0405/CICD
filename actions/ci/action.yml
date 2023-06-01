@@ -1,0 +1,15 @@
+name: 'Auth0 Server'
+description: 'Auth0 CICD Example with Github Actions'
+inputs:
+  stage:
+      description: 'Deployment Env'
+      required: true
+outputs:
+  version:
+    description: 'Deploying Node Server'
+    
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  env:
+    STAGE: ${{ inputs.stage }}
