@@ -1,6 +1,6 @@
 #!/bin/bash
 # Replace some env varibles according to the environment 
-if [[ "$ENVIRONMENT" == "dev"]]; then
+if ["$ENVIRONMENT" == "dev"]; then
     REGION="us-west-2"
 else
     REGION="us-east-1"
