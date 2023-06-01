@@ -9,6 +9,9 @@ const instance = axios.create({
     },
 });
 
+router.get('/', async (req, res) => {
+    res.json({ success: true, data: "Server running!" });
+})
 router.post('/get-token', async (req, res, next) => {
 
     let reqbody = {
