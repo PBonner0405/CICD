@@ -1,0 +1,27 @@
+service: auth0-dev-microservice
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: us-west-2
+  memorySize: 3072
+  timeout: 120
+  iam:
+    role:
+      statements: 
+        - Effect: Allow
+          Action: 
+            - 'sqs:ListQueues'
+            - 'sqs:SendMessage'
+            - 'sqs:GetQueueUrl'
+          Resource: '*'
+  httpApi:
+    cors: true
+plugins: 
+  - serverless-dotenv-plugin
+functions:
+  api:
+    handler: server.handler
+    events:
+      - httpApi: '*'
