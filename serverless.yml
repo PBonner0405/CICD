@@ -22,6 +22,6 @@ plugins:
   - serverless-dotenv-plugin
 functions:
   api:
-    handler: server.handler
+    handler: index.handler
     events:
       - httpApi: '*'

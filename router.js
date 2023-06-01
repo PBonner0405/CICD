@@ -27,8 +27,6 @@ router.post('/get-token', async (req, res, next) => {
     } catch (error) {
         res.json(error);
     }
-
-
 });
 
 module.exports = router;
